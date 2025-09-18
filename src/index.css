@@ -1,0 +1,211 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Mystery NFT Dark Theme */
+    --background: 240 15% 6%;
+    --foreground: 200 100% 95%;
+
+    --card: 240 12% 10%;
+    --card-foreground: 200 100% 95%;
+
+    --popover: 240 12% 8%;
+    --popover-foreground: 200 100% 95%;
+
+    --primary: 190 100% 55%;
+    --primary-foreground: 240 15% 6%;
+
+    --secondary: 260 35% 25%;
+    --secondary-foreground: 200 100% 95%;
+
+    --muted: 240 8% 15%;
+    --muted-foreground: 200 20% 70%;
+
+    --accent: 45 100% 65%;
+    --accent-foreground: 240 15% 6%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 200 100% 95%;
+
+    --border: 240 8% 20%;
+    --input: 240 8% 15%;
+    --ring: 190 100% 55%;
+
+    /* Custom Mystery Theme Colors */
+    --mystery-glow: 190 100% 55%;
+    --mystery-secondary: 260 60% 45%;
+    --premium-gold: 45 100% 65%;
+    --shadow-deep: 240 20% 3%;
+    
+    /* Gradients */
+    --gradient-mystery: linear-gradient(135deg, hsl(240 15% 6%), hsl(260 35% 15%));
+    --gradient-glow: linear-gradient(135deg, hsl(190 100% 55% / 0.2), hsl(260 60% 45% / 0.2));
+    --gradient-premium: linear-gradient(135deg, hsl(45 100% 65%), hsl(35 100% 55%));
+    
+    /* Shadows */
+    --shadow-mystery: 0 0 40px hsl(190 100% 55% / 0.3);
+    --shadow-premium: 0 0 30px hsl(45 100% 65% / 0.4);
+    --shadow-deep: 0 10px 50px hsl(240 20% 3% / 0.8);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Mystery Box Components */
+  .mystery-box {
+    @apply relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-card to-muted;
+    background: var(--gradient-mystery);
+    box-shadow: var(--shadow-deep), inset 0 1px 0 hsl(var(--border));
+  }
+  
+  .mystery-box-glow {
+    @apply absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500;
+    background: var(--gradient-glow);
+    box-shadow: var(--shadow-mystery);
+  }
+  
+  .mystery-box:hover .mystery-box-glow {
+    @apply opacity-100;
+  }
+  
+  .premium-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    background: var(--gradient-premium);
+    color: hsl(var(--accent-foreground));
+    box-shadow: var(--shadow-premium);
+  }
+  
+  .glow-text {
+    @apply relative;
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+  
+  .cyber-border {
+    @apply relative;
+  }
+  
+  .cyber-border::before {
+    @apply absolute inset-0 rounded-lg;
+    content: '';
+    padding: 2px;
+    background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--mystery-secondary)), hsl(var(--accent)));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+}
+
+@layer utilities {
+  .animate-mystery-pulse {
+    animation: mystery-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-reveal {
+    animation: reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes mystery-pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+  
+  @keyframes reveal {
+    0% {
+      opacity: 0;
+      transform: scale(0.8) rotateY(180deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotateY(0deg);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
