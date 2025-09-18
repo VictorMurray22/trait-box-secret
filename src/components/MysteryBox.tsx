@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Lock, Unlock, Sparkles } from 'lucide-react';
+import { useTraitBoxContract } from '@/hooks/useContract';
+import { encryptTraitReveal } from '@/lib/fhe';
+import { toast } from 'sonner';
 import mysteryBoxImg from '@/assets/mystery-box-premium.jpg';
 import traitGemImg from '@/assets/trait-gem.jpg';
 
@@ -30,14 +33,56 @@ const rarityColors = {
 
 export function MysteryBox({ id, name, isRevealed, traits, onReveal }: MysteryBoxProps) {
   const [isRevealing, setIsRevealing] = useState(false);
+  const { revealTrait, isPending } = useTraitBoxContract();
 
   const handleReveal = async () => {
     setIsRevealing(true);
-    // Simulate reveal delay
-    setTimeout(() => {
+    
+    try {
+      // Encrypt trait data using FHE
+      const traitData = traits[0]; // Get first trait for demonstration
+      const rarityValue = getRarityValue(traitData.rarity);
+      
+      const encryptedData = await encryptTraitReveal(
+        id,
+        rarityValue,
+        Math.floor(Math.random() * 100)
+      );
+
+      // Call smart contract to reveal trait
+      const txHash = await revealTrait(
+        id,
+        encryptedData.traitId,
+        encryptedData.rarity,
+        encryptedData.value,
+        traitData.name,
+        encryptedData.proof
+      );
+
+      toast.success('Trait revealed successfully!', {
+        description: `Transaction: ${txHash?.slice(0, 10)}...`
+      });
+
+      // Update local state
       onReveal(id);
+    } catch (error) {
+      console.error('Error revealing trait:', error);
+      toast.error('Failed to reveal trait', {
+        description: 'Please try again later'
+      });
+    } finally {
       setIsRevealing(false);
-    }, 1000);
+    }
+  };
+
+  const getRarityValue = (rarity: string): number => {
+    switch (rarity) {
+      case 'Common': return 1;
+      case 'Rare': return 2;
+      case 'Epic': return 3;
+      case 'Legendary': return 4;
+      default: return 1;
+    }
   };
 
   if (isRevealed) {
@@ -101,12 +146,12 @@ export function MysteryBox({ id, name, isRevealed, traits, onReveal }: MysteryBo
         
         <Button 
           className="w-full cyber-border bg-primary/20 hover:bg-primary/30 text-primary border-primary/50"
-          disabled={isRevealing}
+          disabled={isRevealing || isPending}
         >
-          {isRevealing ? (
+          {isRevealing || isPending ? (
             <>
               <Sparkles className="w-4 h-4 mr-2 animate-spin" />
-              Revealing...
+              {isPending ? 'Confirming...' : 'Revealing...'}
             </>
           ) : (
             <>
